@@ -51,9 +51,9 @@ var height = 500;
 var svg = d3.select("svg")
             .attr("width", width)
             .attr("height", height);
-var padding = 10; // so dots don't get cut off
+var padding = 30; // so dots don't get cut off
 
-var data = [[250, 250], [0, 0], [100, 150], [400, 200], [700, 250]];
+var data = movies
 
 // since data is outside of our 500 x 500 width/height, we need to scale our data
 // domain is the value range of the dataset
@@ -62,19 +62,19 @@ var data = [[250, 250], [0, 0], [100, 150], [400, 200], [700, 250]];
 
 // the below functions grab the min/max of the data and dynamically put it in the x/yScale functions
 var xMin = d3.min(data, function(d) {
-  return d[0];
+  return d.daysOpen;
 });
 
 var xMax = d3.max(data, function(d) {
-  return d[0];
+  return d.daysOpen;
 });
 
 var yMin = d3.min(data, function(d) {
-  return d[1]
+  return d.total;
 });
 
 var yMax = d3.max(data, function(d) {
-  return d[1]
+  return d.total;
 });
 
 var xScale = d3.scaleLinear()
@@ -85,17 +85,33 @@ var yScale = d3.scaleLinear()
                .domain([yMin, yMax])
                .range([height - padding, padding]);  // flip so the y starts from the bottom instead of the top
 
+// auto color scale
+var colorScale = d3.scaleLinear()
+                   .domain([0,1])
+                   .range(['red', 'green']);
+
+var tooltip = d3.select('div#tooltip');
 
 svg.selectAll('circle')
   .data(data)
   .enter()
   .append('circle')
-  .attr('cx', function(d) { return xScale(d[0]); })
-  .attr('cy', function(d) { return yScale(d[1]); })
-  .attr('r', function() { return 10; });
+  .attr('cx', function(d) { return xScale(d.daysOpen); })
+  .attr('cy', function(d) { return yScale(d.total); })
+  .attr('r', function(d) { return 5 * d.total/d.openingTotal; })
+  .attr('fill', function(d) { return colorScale(d.freshness); })
+  .on('mouseover', function(d) {
+    tooltip.text(d.title)
+    tooltip.style('left', d3.event.screenX + 'px');
+    tooltip.style('top', d3.event.screenY + 'px');
+    tooltip.style('opacity', 1);
+  })
+  ;
 
 
-
+// div.selectAll('div')
+//   .attr('left', function(d) { return d3.event.screenX; })
+//   .attr('top', function(d) { return d3.event.screenX; });
 
 
 
