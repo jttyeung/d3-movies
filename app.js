@@ -101,19 +101,11 @@ svg.selectAll('circle')
   .attr('r', function(d) { return 5 * d.total/d.openingTotal; })
   .attr('fill', function(d) { return colorScale(d.freshness); })
   .on('mouseover', function(d) {
-    tooltip.text(d.title)
+    tooltip.text(d.title);
     tooltip.style('left', d3.event.screenX + 'px');
     tooltip.style('top', d3.event.screenY + 'px');
     tooltip.style('opacity', 1);
   })
   ;
-
-
-// div.selectAll('div')
-//   .attr('left', function(d) { return d3.event.screenX; })
-//   .attr('top', function(d) { return d3.event.screenX; });
-
-
-
 
 
